@@ -69,7 +69,14 @@
               cargo-nextest # next-generation test runner
               bacon # background code checker
               just # just a command runner
+              husky # manage git hooks
             ];
+            shellHook = ''
+              # install git hook managed by husky
+              if [ ! -e "./.husky/_" ]; then
+                husky install
+              fi
+            '';
           };
         }
       );
