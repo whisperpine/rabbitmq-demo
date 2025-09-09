@@ -11,3 +11,6 @@
     not(any(test, debug_assertions)),
     deny(clippy::print_stdout, clippy::dbg_macro)
 )]
+
+#[cfg(test)]
+mod tests;
