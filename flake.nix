@@ -69,6 +69,8 @@
               cargo-nextest # next-generation test runner
               bacon # background code checker
               just # just a command runner
+              cocogitto # conventional commit toolkit
+              typos # check misspelling
               husky # manage git hooks
             ];
             shellHook = ''
