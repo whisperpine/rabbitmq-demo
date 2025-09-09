@@ -1,9 +1,6 @@
 /target
 /.direnv
 
-# Typst generated
-/target
-
 # Logs
 logs/
 *.log
