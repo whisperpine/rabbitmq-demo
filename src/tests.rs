@@ -12,13 +12,14 @@ async fn test_async_mqtt() {
 
     let (client, mut eventloop) = AsyncClient::new(mqttoptions, 10);
     client
-        .subscribe("hello/rumqtt", QoS::AtLeastOnce)
+        .subscribe("hello/rumqtt", QoS::AtMostOnce)
         .await
         .unwrap();
 
-    task::spawn(async move {
+    let client_cloned = client.clone();
+    let handle = task::spawn(async move {
         for i in 0..3 {
-            client
+            client_cloned
                 .publish("hello/rumqtt", QoS::AtLeastOnce, false, vec![i; i as usize])
                 .await
                 .unwrap();
@@ -35,6 +36,9 @@ async fn test_async_mqtt() {
         let notification = notification.unwrap();
         println!("Received = {notification:?}");
     }
+
+    handle.abort();
+    client.disconnect().await.unwrap();
 }
 
 #[test]
@@ -49,9 +53,10 @@ fn test_sync_mqtt() {
     let (client, mut connection) = Client::new(mqttoptions, 10);
     client.subscribe("hello/rumqtt", QoS::AtMostOnce).unwrap();
 
+    let client_cloned = client.clone();
     thread::spawn(move || {
         for i in 0..3 {
-            client
+            client_cloned
                 .publish("hello/rumqtt", QoS::AtLeastOnce, false, vec![i; i as usize])
                 .unwrap();
             thread::sleep(Duration::from_millis(100));
@@ -63,6 +68,7 @@ fn test_sync_mqtt() {
         let notification = notification.unwrap();
         println!("Notification = {notification:?}");
         if instant.elapsed().as_secs_f32() > 2. {
+            client.disconnect().unwrap();
             break;
         }
     }
