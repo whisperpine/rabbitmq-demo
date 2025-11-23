@@ -1,3 +1,7 @@
+# list all available subcommands
+_default:
+  @just --list
+
 # open the RabbitMQ management web page in the default browser
 web:
   xdg-open "http://localhost:15672"
